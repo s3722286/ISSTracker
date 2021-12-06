@@ -41,8 +41,8 @@ if __name__ == '__main__':
 try:
     while(True):
         IssTracker.calcDirectionToTarget(0, 0, 0)
-        time.sleep(0.02)
-        IssTracker.LC.clearDisplay()
+        #time.sleep(0.02)
+        #IssTracker.LC.clearDisplay()
 
 except:
 

@@ -13,12 +13,18 @@ class LightController:
         yellow = (200, 200, 0)
         green = (0, 255, 0)
         blue = (0, 0, 255)
+        off = (0, 0, 0)
 
         self.redTuple = (red, range(0,8), (0, 7))
         self.orangeTuple = (orange, range(1,7), (1, 6))
         self.yellowTuple = (yellow, range(2,6), (2, 5))
         self.greenTuple = (green, range(3,5), (3, 4))
         self.blueTuple = (blue, range(3,5), (3, 4))
+        self.offTuple = (off, range(3,4), (0, 0))
+
+        self.curVertDict = {"colorTuple": self.offTuple, "incline": 0}
+        self.curHorDict = {"colorTuple": self.offTuple, "incline": 0}
+
 
     def drawDirection(self, angle, direction):
 
@@ -40,18 +46,34 @@ class LightController:
             self.drawLine(self.blueTuple, incline, direction)
 
     def drawLine(self, colorTuple, isNegative, direction):
+
         if(direction == "vertical"):
             X = colorTuple[1]
             Y = colorTuple[2][isNegative]
+            
+            if((colorTuple[0] != self.curVertDict["colorTuple"][0]) and (isNegative != self.curVertDict["incline"])):
 
-            for x in X:
-                self.s.set_pixel(x, Y, colorTuple[0])
+                self.drawLine((self.off, self.curVertDict["colorTuple"][1], self.curVertDict["colorTuple"][2]), self.curVertDict["incline"], "vertical")
+
+                self.curVertDict = {"colorTuple": colorTuple, "incline": isNegative}
+
+                for x in X:
+                    self.s.set_pixel(x, Y, colorTuple[0])
+
+
         else:
             X = colorTuple[2][isNegative]
-            Y = colorTuple[1] 
+            Y = colorTuple[1]
+            
+            if((colorTuple[0] != self.curHorDict["colorTuple"][0]) and (isNegative != self.curHorDict["incline"])):
 
-            for y in Y:
-                self.s.set_pixel(X, y, colorTuple[0]) 
+                self.drawLine((self.off, self.curHorDict["colorTuple"][1], self.curHorDict["colorTuple"][2]), self.curHorDict["incline"], "horizontal")
+
+                self.curHorDict = {"colorTuple": colorTuple, "incline": isNegative}
+
+                for y in Y:
+                    self.s.set_pixel(X, y, colorTuple[0]) 
+
 
     def clearDisplay(self):
         self.s.clear()
@@ -71,7 +93,7 @@ if __name__ == '__main__':
         LC.drawDirection(angl, "vertical")
         LC.drawDirection(angl2, "horizontal")
         time.sleep(0.1)
-        self.clearDisplay()
+        #self.clearDisplay()
 
     LC.clearDisplay()
         

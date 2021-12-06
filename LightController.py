@@ -4,8 +4,8 @@ import time
 
 class LightController:
 
-    def __init__(self):
-        self.s = SenseHat()
+    def __init__(self, SenseHat):
+        self.s = SenseHat
         self.s.set_rotation(270)
 
         red = (255, 0, 0)
@@ -13,27 +13,12 @@ class LightController:
         yellow = (200, 200, 0)
         green = (0, 255, 0)
         blue = (0, 0, 255)
-        self.allOff = [(0, 0, 0) for i in range(64)]
 
         self.redTuple = (red, range(0,8), (0, 7))
         self.orangeTuple = (orange, range(1,7), (1, 6))
         self.yellowTuple = (yellow, range(2,6), (2, 5))
         self.greenTuple = (green, range(3,5), (3, 4))
         self.blueTuple = (blue, range(3,5), (3, 4))
-
-    def drawLine(self, colorTuple, isNegative, direction):
-        if(direction == "vertical"):
-            X = colorTuple[1]
-            Y = colorTuple[2][isNegative]
-
-            for x in X:
-                self.s.set_pixel(x, Y, colorTuple[0])
-        else:
-            X = colorTuple[2][isNegative]
-            Y = colorTuple[1] 
-
-            for y in Y:
-                self.s.set_pixel(X, y, colorTuple[0]) 
 
     def drawDirection(self, angle, direction):
 
@@ -54,19 +39,33 @@ class LightController:
         else:
             self.drawLine(self.blueTuple, incline, direction)
 
+    def drawLine(self, colorTuple, isNegative, direction):
+        if(direction == "vertical"):
+            X = colorTuple[1]
+            Y = colorTuple[2][isNegative]
+
+            for x in X:
+                self.s.set_pixel(x, Y, colorTuple[0])
+        else:
+            X = colorTuple[2][isNegative]
+            Y = colorTuple[1] 
+
+            for y in Y:
+                self.s.set_pixel(X, y, colorTuple[0]) 
+
     def clearDisplay(self):
-        self.s.set_pixels(self.allOff)
+        self.s.clear()
 
 
 
 
 if __name__ == '__main__':
-     
-    LC = LightController()
+    S = SenseHat()
+    LC = LightController(S)
     anglRange = range(35, -36, -1)
 
     for angl in anglRange:
-        angl2 = abs(angl)
+        angl2 = angl
         print(str(angl) + " " + str(angl2))
         
         LC.drawDirection(angl, "vertical")

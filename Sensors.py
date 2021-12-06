@@ -3,16 +3,21 @@ from sense_hat import SenseHat
 import time
 
 class Sensors:
-    s = SenseHat()
+    def __init__(self, SenseHat):
+        self.s = SenseHat
+        self.s.set_imu_config(True, True, True)
+
+    #Note modify yaw to compensate for magnetic/real north mismatch
+    def getOrientation(self):
+        return self.s.get_orientation_degrees()
 
 if __name__ == '__main__':
     s = SenseHat()
-    s.set_rotation(270)
-    s.set_imu_config(False, True, True)
-    
+    S = Sensors(s)
+
     while(True):
-        orientation = s.get_orientation_degrees()
-        print("p: {pitch}, r: {roll}, y: {yaw}".format(**orientation))
+        orientation = S.getOrientation()
+        print("p: {pitch:.2f}, r: {roll:.2f}, y: {yaw:.2f}".format(**orientation))
         time.sleep(0.1)
 
     

@@ -3,25 +3,39 @@ from sense_hat import SenseHat
 import time
 
 class LightController:
-    s = SenseHat()
-    s.set_rotation(270)
 
-    red = (255, 0, 0)
-    orange = (255, 128, 0)
-    yellow = (200, 200, 0)
-    green = (0, 255, 0)
-    blue = (0, 0, 255)
-    off = (0, 0, 0)
-    allOff = [off for i in range(64)]
+    def __init__(self):
+        self.s = SenseHat()
+        self.s.set_rotation(270)
 
-    redTuple = (red, range(0,8), (0, 7))
-    orangeTuple = (orange, range(1,7), (1, 6))
-    yellowTuple = (yellow, range(2,6), (2, 5))
-    greenTuple = (green, range(3,5), (3, 4))
-    blueTuple = (blue, range(3,5), (3, 4))
+        red = (255, 0, 0)
+        orange = (255, 128, 0)
+        yellow = (200, 200, 0)
+        green = (0, 255, 0)
+        blue = (0, 0, 255)
+        self.allOff = [(0, 0, 0) for i in range(64)]
 
+        self.redTuple = (red, range(0,8), (0, 7))
+        self.orangeTuple = (orange, range(1,7), (1, 6))
+        self.yellowTuple = (yellow, range(2,6), (2, 5))
+        self.greenTuple = (green, range(3,5), (3, 4))
+        self.blueTuple = (blue, range(3,5), (3, 4))
 
-    def drawDirection(angle, direction):
+    def drawLine(self, colorTuple, isNegative, direction):
+        if(direction == "vertical"):
+            X = colorTuple[1]
+            Y = colorTuple[2][isNegative]
+
+            for x in X:
+                self.s.set_pixel(x, Y, colorTuple[0])
+        else:
+            X = colorTuple[2][isNegative]
+            Y = colorTuple[1] 
+
+            for y in Y:
+                self.s.set_pixel(X, y, colorTuple[0]) 
+
+    def drawDirection(self, angle, direction):
 
         incline = 0
 
@@ -30,42 +44,34 @@ class LightController:
             angle = abs(angle)
 
         if(angle > 30):
-            drawLine(redTuple, incline, direction)
+            self.drawLine(self.redTuple, incline, direction)
         elif(angle > 10):
-            drawLine(orangeTuple, incline, direction)
+            self.drawLine(self.orangeTuple, incline, direction)
         elif(angle > 3):
-            drawLine(yellowTuple, incline, direction)
+            self.drawLine(self.yellowTuple, incline, direction)
         elif(angle > 1):
-            drawLine(greenTuple, incline, direction)
+            self.drawLine(self.greenTuple, incline, direction)
         else:
-            drawLine(blueTuple, incline, direction)
+            self.drawLine(self.blueTuple, incline, direction)
 
-    def drawLine(colorTuple, isNegative, direction):
-        if(direction == "vertical"):
-            X = colorTuple[1]
-            Y = colorTuple[2][isNegative]
+    def clearDisplay(self):
+        self.s.set_pixels(self.allOff)
 
-            for x in X:
-                s.set_pixel(x, Y, colorTuple[0])
-        else:
-            X = colorTuple[2][isNegative]
-            Y = colorTuple[1] 
 
-            for y in Y:
-                s.set_pixel(X, y, colorTuple[0]) 
 
-   
+
 if __name__ == '__main__':
      
+    LC = LightController()
     anglRange = range(35, -36, -1)
 
     for angl in anglRange:
         angl2 = abs(angl)
         print(str(angl) + " " + str(angl2))
         
-        drawDirection(angl, "vertical")
-        drawDirection(angl2, "horizontal")
-        time.sleep(0.1)
-        s.set_pixels(allOff)
+        LC.drawDirection(angl, "vertical")
+        LC.drawDirection(angl2, "horizontal")
+        LC.clearDisplay()
+        
 
 

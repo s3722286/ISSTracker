@@ -21,8 +21,19 @@ class ISSTracker:
 
         Orientation = self.Sens.getOrientation()
         
-        verticalAngle = Orientation["pitch"]
-        horizontalAngle = Orientation["yaw"]
+        verticalAngle = 0 - Orientation["pitch"]
+        
+        if(verticalAngle < -180): 
+            verticalAngle = verticalAngle + 360
+        if(verticalAngle > 180): 
+            verticalAngle = verticalAngle - 360
+
+        horizontalAngle = 0 - Orientation["yaw"]
+
+        if(horizontalAngle < -180): 
+            horizontalAngle = horizontalAngle + 360
+        if(horizontalAngle > 180): 
+            horizontalAngle = horizontalAngle - 360
 
         self.displayDirectionToTarget(verticalAngle,horizontalAngle)
 
@@ -41,7 +52,7 @@ if __name__ == '__main__':
 try:
     while(True):
         IssTracker.calcDirectionToTarget(0, 0, 0)
-        time.sleep(0.1)
+        time.sleep(0.05)
         #IssTracker.LC.clearDisplay()
 
 except:

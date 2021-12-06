@@ -71,7 +71,9 @@ if __name__ == '__main__':
         LC.drawDirection(angl, "vertical")
         LC.drawDirection(angl2, "horizontal")
         time.sleep(0.1)
-        LC.clearDisplay()
+        self.clearDisplay()
+
+    LC.clearDisplay()
         
 
 

@@ -51,11 +51,11 @@ class LightController:
             X = colorTuple[1]
             Y = colorTuple[2][isNegative]
             
-            if((colorTuple[0] != self.curVertDict["colorTuple"][0]) and (isNegative != self.curVertDict["incline"])):
+            if((colorTuple[0] != self.curVertDict["colorTuple"][0]) or (isNegative != self.curVertDict["incline"])):
+                if(colorTuple[0] != (0, 0, 0)):
+                    self.drawLine(((0, 0, 0), self.curVertDict["colorTuple"][1], self.curVertDict["colorTuple"][2]), self.curVertDict["incline"], "vertical")
 
-                self.drawLine((self.off, self.curVertDict["colorTuple"][1], self.curVertDict["colorTuple"][2]), self.curVertDict["incline"], "vertical")
-
-                self.curVertDict = {"colorTuple": colorTuple, "incline": isNegative}
+                    self.curVertDict = {"colorTuple": colorTuple, "incline": isNegative}
 
                 for x in X:
                     self.s.set_pixel(x, Y, colorTuple[0])
@@ -65,11 +65,11 @@ class LightController:
             X = colorTuple[2][isNegative]
             Y = colorTuple[1]
             
-            if((colorTuple[0] != self.curHorDict["colorTuple"][0]) and (isNegative != self.curHorDict["incline"])):
+            if((colorTuple[0] != self.curHorDict["colorTuple"][0]) or (isNegative != self.curHorDict["incline"])):
+                if(colorTuple[0] != (0, 0, 0)):
+                    self.drawLine(((0, 0, 0), self.curHorDict["colorTuple"][1], self.curHorDict["colorTuple"][2]), self.curHorDict["incline"], "horizontal")
 
-                self.drawLine((self.off, self.curHorDict["colorTuple"][1], self.curHorDict["colorTuple"][2]), self.curHorDict["incline"], "horizontal")
-
-                self.curHorDict = {"colorTuple": colorTuple, "incline": isNegative}
+                    self.curHorDict = {"colorTuple": colorTuple, "incline": isNegative}
 
                 for y in Y:
                     self.s.set_pixel(X, y, colorTuple[0]) 

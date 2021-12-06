@@ -8,9 +8,11 @@ class Sensors:
 if __name__ == '__main__':
     s = SenseHat()
     s.set_rotation(270)
+    s.set_imu_config(False, True, True)
+    
     while(True):
-        north = s.get_compass()
-        print("North: %s" % north)
-        #time.sleep(0.1)
+        orientation = s.get_orientation_degrees()
+        print("p: {pitch}, r: {roll}, y: {yaw}".format(**orientation))
+        time.sleep(0.1)
 
     

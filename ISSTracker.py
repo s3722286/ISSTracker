@@ -16,19 +16,26 @@ class ISSTracker:
         self.Lon = 0
         self.Alt = 0
 
+        self.targetAltitude = 0
+        self.targetAzimuth = 0
 
-    def directionToTarget(self, Latitude, Longitude, Altitude):
+    def calcDirectionToTarget(self, latitude, longitude, altitude):
+        self.targetAltitude = 0
+        self.targetAzimuth = 0
+
+
+    def directionToTarget(self):
 
         Orientation = self.Sens.getOrientation()
         
-        verticalAngle = 0 - Orientation["pitch"]
+        verticalAngle = self.targetAltitude - Orientation["pitch"]
         
         if(verticalAngle < -180): 
             verticalAngle = verticalAngle + 360
         if(verticalAngle > 180): 
             verticalAngle = verticalAngle - 360
 
-        horizontalAngle = 0 - Orientation["yaw"]
+        horizontalAngle = self.targetAzimuth - Orientation["yaw"]
 
         if(horizontalAngle < -180): 
             horizontalAngle = horizontalAngle + 360
@@ -50,8 +57,10 @@ if __name__ == '__main__':
     IssTracker = ISSTracker()
 
 try:
+    IssTracker.calcDirectionToTarget(0, 0, 0)
+
     while(True):
-        IssTracker.directionToTarget(0, 0, 0)
+        IssTracker.directionToTarget()
         time.sleep(0.05)
         #IssTracker.LC.clearDisplay()
 

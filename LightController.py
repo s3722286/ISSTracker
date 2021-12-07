@@ -7,6 +7,7 @@ class LightController:
     def __init__(self, SenseHat):
         self.s = SenseHat
         self.s.set_rotation(270)
+        self.s.clear()
 
         red = (255, 0, 0)
         orange = (255, 128, 0)

@@ -17,7 +17,7 @@ class ISSTracker:
         self.Alt = 0
 
 
-    def calcDirectionToTarget(self, Latitude, Longitude, Altitude):
+    def directionToTarget(self, Latitude, Longitude, Altitude):
 
         Orientation = self.Sens.getOrientation()
         
@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
 try:
     while(True):
-        IssTracker.calcDirectionToTarget(0, 0, 0)
+        IssTracker.directionToTarget(0, 0, 0)
         time.sleep(0.05)
         #IssTracker.LC.clearDisplay()
 

@@ -57,13 +57,16 @@ class LightController:
 
                     self.curVertDict = {"colorTuple": colorTuple, "incline": isNegative}
 
-                for x in X:
-                    self.s.set_pixel(x, Y, colorTuple[0])
+                else:
+                    for x in X:
+                        self.s.set_pixel(x, Y, colorTuple[0])
 
 
         else:
-            X = colorTuple[2][isNegative]
-            Y = colorTuple[1]
+            X = self.curVertDict["colorTuple"][1]
+            Y = self.curVertDict["colorTuple"][2][self.curVertDict["incline"]]
+            X2 = colorTuple[2][isNegative]
+            Y2 = colorTuple[1]
             
             if((colorTuple[0] != self.curHorDict["colorTuple"][0]) or (isNegative != self.curHorDict["incline"])):
                 if(colorTuple[0] != (0, 0, 0)):
@@ -71,8 +74,12 @@ class LightController:
 
                     self.curHorDict = {"colorTuple": colorTuple, "incline": isNegative}
 
-                for y in Y:
-                    self.s.set_pixel(X, y, colorTuple[0]) 
+                for y2 in Y2:
+                    self.s.set_pixel(X2, y2, colorTuple[0])
+ 
+            if(colorTuple[0] != (0, 0, 0)):
+                for x in X:
+                    self.s.set_pixel(x, Y, self.curVertDict["colorTuple"][0])
 
 
     def clearDisplay(self):

@@ -37,10 +37,11 @@ class ISSTracker:
 
         # Calculating Azimuth Angle
         varX = math.cos(targetLatRad) * math.sin(lonDiff)
-        varY = math.cos(selfLatRad) * math.sin(targetLatRad) - math.sin(selfLatRad) * math.cos(targetLatRad) * math.cos(lonDiff)
-        
+        varY = math.cos(selfLatRad) * math.sin(targetLatRad) - math.sin(selfLatRad) * math.cos(targetLatRad) * math.cos(lonDiff)        
+
+
         bearing = math.atan2(varX, varY)
-        self.targetAzimuthAngle = math.degrees(bearing)
+        self.targetAzimuthAngle = math.degrees(bearing) * -1
         print("degBearing: " + str(self.targetAzimuthAngle))
 
 
@@ -105,7 +106,7 @@ if __name__ == '__main__':
     IssTracker = ISSTracker()
 
 try:
-    IssTracker.calcDirectionToTarget(40.727490163872815, -74.05434413623698, 0)
+    IssTracker.calcDirectionToTarget(-37.82157683248408, 144.9646339973411, 297.3)
 
     while(True):
         IssTracker.directionToTarget()

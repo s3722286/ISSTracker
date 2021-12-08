@@ -22,31 +22,52 @@ class ISSTracker:
         self.Lon = float(location[1])
         self.Alt = float(location[2])
 
-        self.targetAltitude = 0
-        self.targetAzimuth = 0
+        self.targetAltitudeAngle = 0
+        self.targetAzimuthAngle = 0
 
     def calcDirectionToTarget(self, latitude, longitude, altitude):
-        #print(latitude)
 
-        longDifference = longitude - self.Lon
-        print("longDifference: " + str(longDifference))
-        varX = math.cos(math.radians(latitude)) * math.sin(math.radians(longDifference))
-        varY = math.cos(math.radians(self.Lat)) * math.sin(math.radians(latitude)) - math.sin(math.radians(self.Lat)) * math.cos(math.radians(latitude)) * math.cos(math.radians(longDifference))
-        print("1: " + str(math.cos(math.radians(self.Lat))))
-        print("2: " + str(math.sin(math.radians(latitude))))
-        print("3: " + str(math.sin(math.radians(self.Lat))))
-        print("4: " + str(math.cos(math.radians(latitude))))
-        print("5: " + str(math.cos(math.radians(longDifference))))
-        print("varX: " + str(varX))        
-        print("varY: " + str(varY))
+        selfLatRad = math.radians(self.Lat)
+        selfLonRad = math.radians(self.Lon)
+        targetLatRad = math.radians(latitude)
+        targetLonRad = math.radians(longitude)
+
+        latDiff = selfLatRad - targetLatRad
+        lonDiff = selfLonRad - targetLonRad
+
+        # Calculating Azimuth Angle
+        varX = math.cos(targetLatRad) * math.sin(lonDiff)
+        varY = math.cos(selfLatRad) * math.sin(targetLatRad) - math.sin(selfLatRad) * math.cos(targetLatRad) * math.cos(lonDiff)
         
         bearing = math.atan2(varX, varY)
-        print("radbearing: " + str(bearing))
+        self.targetAzimuthAngle = math.degrees(bearing)
+        print("degBearing: " + str(self.targetAzimuthAngle))
 
-        self.targetAzimuth = math.degrees(bearing)
-        print("degBearing: " + str(self.targetAzimuth))
 
-        self.targetAltitude = 0
+        # Calculating Altitude Angle
+        earthRadius = 6371 # in kilometres
+        p = (math.pi / 180)
+
+        aVar = math.sin(latDiff / 2)**2 + math.cos(selfLatRad) * math.cos(targetLatRad) * math.sin(lonDiff / 2)**2
+        cVar = 2 * math.atan2(math.sqrt(aVar), math.sqrt(1 - aVar))
+        GCDistance = earthRadius * cVar
+        print("Great Circle Distance: " + str(GCDistance))
+
+        innerAngleRad = GCDistance / earthRadius
+        selfDistanceFromCenter = 6371 * 1000 + self.Alt
+        targetDistanceFromCenter = 6371 * 1000 + altitude
+
+        directDistance = math.sqrt(selfDistanceFromCenter**2 + targetDistanceFromCenter**2 - 2 * selfDistanceFromCenter * targetDistanceFromCenter * math.cos(innerAngleRad))
+        acosInput = (selfDistanceFromCenter**2 + directDistance**2 - targetDistanceFromCenter**2) / (2 * targetDistanceFromCenter * directDistance)
+        
+        if(acosInput < -1):
+            acosInput = -1
+        elif(acosInput > 1):
+            acosInput = 1
+        
+        self.targetAltitudeAngle = math.degrees(math.acos(acosInput)) - 90
+        print("altitudeAngle: " + str(self.targetAltitudeAngle))
+
 
 
 
@@ -55,14 +76,14 @@ class ISSTracker:
         Orientation = self.Sens.getOrientation()
         #print(Orientation["yaw"])
         
-        verticalAngle = self.targetAltitude - Orientation["pitch"]
+        verticalAngle = self.targetAltitudeAngle - Orientation["pitch"]
         
         if(verticalAngle < -180): 
             verticalAngle = verticalAngle + 360
         if(verticalAngle > 180): 
             verticalAngle = verticalAngle - 360
 
-        horizontalAngle = self.targetAzimuth - Orientation["yaw"]
+        horizontalAngle = self.targetAzimuthAngle - Orientation["yaw"]
 
         if(horizontalAngle < -180): 
             horizontalAngle = horizontalAngle + 360
@@ -84,7 +105,7 @@ if __name__ == '__main__':
     IssTracker = ISSTracker()
 
 try:
-    IssTracker.calcDirectionToTarget(90, 0, 0) #mag north(86.4,-156.768, 0)
+    IssTracker.calcDirectionToTarget(40.727490163872815, -74.05434413623698, 0)
 
     while(True):
         IssTracker.directionToTarget()

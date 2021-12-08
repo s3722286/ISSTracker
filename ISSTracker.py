@@ -2,6 +2,7 @@
 from sense_hat import SenseHat
 import time
 import math
+import requests
 from LightController import LightController
 from Sensors import Sensors
 
@@ -25,6 +26,18 @@ class ISSTracker:
         self.targetAltitudeAngle = 0
         self.targetAzimuthAngle = 0
 
+    def calcDirectionToISS(self):
+        url = "https://api.wheretheiss.at/v1/satellites/25544"
+        response = requests.get(url)
+
+        if(response.status_code == 200):
+
+            ISSData = response.json()
+            self.calcDirectionToTarget(ISSData['latitude'], ISSData['longitude'], ISSData['altitude'] * 1000)
+
+        else:
+            print("API call failed. Status Code: " + str(response.status_code))
+
     def calcDirectionToTarget(self, latitude, longitude, altitude):
 
         selfLatRad = math.radians(self.Lat)
@@ -37,8 +50,8 @@ class ISSTracker:
 
         # Calculating Azimuth Angle
         varX = math.cos(targetLatRad) * math.sin(lonDiff)
-        varY = math.cos(selfLatRad) * math.sin(targetLatRad) - math.sin(selfLatRad) * math.cos(targetLatRad) * math.cos(lonDiff)        
-
+        varY = math.cos(selfLatRad) * math.sin(targetLatRad) - math.sin(selfLatRad) * math.cos(targetLatRad) * math.cos(lonDiff)
+        
 
         bearing = math.atan2(varX, varY)
         self.targetAzimuthAngle = math.degrees(bearing) * -1
@@ -106,11 +119,15 @@ if __name__ == '__main__':
     IssTracker = ISSTracker()
 
 try:
-    IssTracker.calcDirectionToTarget(-37.82157683248408, 144.9646339973411, 297.3)
-
+    #IssTracker.calcDirectionToTarget(-37.82157683248408, 144.9646339973411, 297.3)
+    i = 0
     while(True):
+        i = i + 1
+        if(i % 5 == 0):
+            IssTracker.calcDirectionToISS()
         IssTracker.directionToTarget()
-        time.sleep(0.05)
+        time.sleep(0.2)
+
     IssTracker.LC.clearDisplay()
 
 except:

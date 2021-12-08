@@ -123,10 +123,10 @@ try:
     i = 0
     while(True):
         i = i + 1
-        if(i % 5 == 0):
+        if(i % 40 == 0):
             IssTracker.calcDirectionToISS()
         IssTracker.directionToTarget()
-        time.sleep(0.2)
+        time.sleep(0.05)
 
     IssTracker.LC.clearDisplay()
 
